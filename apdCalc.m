@@ -1,9 +1,8 @@
 function [cAP_Data] = apdCalc(filename,Fs,outputName,folder_name)
 
-%%If i make a change, can i commit to local repo?
 
 %original call apdCalc(data,start,endp,Fs,percent,maxAPD,minAPD,motion,coordinate,bg)
-% The function [actC] = apdCalc() calculates the mean APD and the standard
+% The function [cAP_Data] = apdCalc() calculates the mean APD and the standard
 %deviation in the area selected.
 
 %INPUTS
@@ -33,9 +32,9 @@ function [cAP_Data] = apdCalc(filename,Fs,outputName,folder_name)
 % Original AUTHOR: Matt Sulkin (sulkin.matt@gmail.com)from wustl
 
 % Modifications: Steven Boggess (sboggess@berkeley.edu)%
-% Julia Lazzari-Dean deserves a lot of credit to get this going, taking
-% what was already written by Matt and helping Steven stitch something
-% workable together to play with. Thanks Julia!!!
+
+% Additional Acknowledgements: Julia Lazzari-Dean(Miller Lab, UCBerkeley), Nathanial Huebsch
+% (UofWashington)
 
 %%Define file path and outputname
 outputName = strrep(outputName,'_MMStack_Pos0.ome','');
@@ -65,18 +64,17 @@ end
 requiredVal90 = 0.1;
 requiredVal50 = 0.5;
 requiredVal30 = 0.7;
-% time1 = time;
 
-%%Smooth the data for further analysis
-
+%%Smooth the data for further analysis with median filter
+%%Needs optimization
 smoothData = medfilt1(meanTrace,5,'truncate');
 
-%%Call backcor GUI and perform background correction)
+%%Perform bleach correction with asymmetric least-squares fit. See function
+%%for reference and further documentation
+background = asymmtLSF(smoothData,10^7, 0.001); %lambda 10^7 and p=0.001 works well for fluorescien bleach
+corrData = (smoothData - background); %brings baseline to zero. Need to make any dF or raw calulations before this.
 
-% background = backcor(time1,smoothData); %%brings up backcor GUI in seperate window. Choose correction from here.
-background = asymmtLSF(smoothData,10^7, 0.001);
-corrData = (smoothData - background); %perform background correction based baseline values from previous line
-
+%%Plotting. Can turn off if desired
 %%plot crude and smoothed plots on one figure, plot corrected trace on a second
 h = figure('name',outputName,'numbertitle','off');
 subplot(3,2,[1,2]);
@@ -103,58 +101,48 @@ ylim([-10, inf]);
 
 %Define threshold on corrected data
 threshold = (((max(corrData)- min(corrData))*0.3) + min(corrData)); %initially the threshold is 30% of the max signal of corrected trace
-threshold = threshold+1 ; %adding the 2 as caution against baseline/no activity. Can change if the noise level of low-signal traces breaks this.
+threshold = threshold+1 ; %adding the 1 as caution against baseline/no activity. Can change if the noise level of low-signal traces breaks this.
+%may need to change above based on the type of image stack used/pixel
+%intensities
 
-%%Call thresholddetection%%
-%plot all chopped data in subplot
+%%Call thresholddetection%% --See documentation in the function
 [chopData , eventStart , eventEnd] = ThresholdDetection(corrData,threshold,Fs);
-
-eventDetector = isempty(chopData);
+eventDetector = isempty(chopData); %%Ensure we actually detected some event
 
 if eventDetector == 0 %case where events were detected
-    
-%     numEvents = length(chopData);
     subplot(3,2,5);
     hold on;
     title('AP Events');
     xlabel('Time(ms)');
     ylabel('Intensity');
-    for i=1:(length(chopData))
+    for i=1:(length(chopData)) %%Plots each detected AP event on same subplot
         chopsize = size((chopData{i,1}),1);
         chopsize1 = chopsize* (1000/Fs);
-        chopTime = linspace(0,chopsize1,chopsize);
+        chopTime = linspace(0,chopsize1,chopsize); %Calculates the time axes for each detected event separately
         chopTime = chopTime.' ;
         plot(chopTime,chopData{i,1}),...
             'DisplayName';sprintf('x-vs-sin(%d*x)',i);
-        
     end;
-    plot(get(gca,'xlim'),[threshold threshold]);
+    plot(get(gca,'xlim'),[threshold threshold]); %%Draws threshold on the collective AP plot
     set (gca , 'OuterPosition' , [0 , 0 , 0.525 ,0.375]);
     maxAP = max (chopData{i});
     ylim([-5 , (maxAP+5)]);
-    
-    
-    
     
     %set up arrays to save the processed data
     numEvents = length(chopData);
     apd30 = zeros(numEvents,1);
     apd50 = zeros(numEvents,1);
     apd90 = zeros(numEvents,1);
-    % dFoverF = zeros(numEvents,1);
-    %     upstrokeDuration = zeros(numEvents,1);
-    % %     SNR = zeros(numEvents,1);
-    %     actTime = zeros(numEvents,1);
-    %     depolarTime = zeros (numEvents,1);
-    
-    %BeatCalc
+
+    %%BeatCalc: finds the beats per minute, allows for cycle length
+    %%calculation later. Also finds interevent interval
     [BPM , interEinter] = BeatCalc(numEvents, timeElap, eventStart, eventEnd);
-    %Duration calculation
+    %$Duration calculation
     for i = 1:numEvents
         %load the relevant AP
         data = chopData{i};
-        
-        %normalize the one dimensional input data
+        %normalize the one dimensional input data %%Why do we do this here?
+        %was in Matt's original code.
         minimum = min(data);
         maximum = max(data);
         difference = maximum-minimum;
@@ -165,14 +153,12 @@ if eventDetector == 0 %case where events were detected
         apd_data2 = diff(apd_data,1,1); % first derivative
         [max_der , max_i] = max(apd_data2,[],1); % find location of max derivative
         
-        
         % Calculate dF/dt max and activation time
         [dFdt_max , max_i] = max(apd_data2,[],1); % find location of max derivative
-%         actTime(i) = max_i /Fs;
+        actTime(i) = max_i /Fs; %%will want to use this indexing for something later
         
-        %%Find maximum of the signal
-        [maxVal , maxValI] = max(apd_data);
-        
+        %%Find maximum of the signal (peak depolarization
+        [maxVal , maxValI] = max(apd_data); %%maxVal is unused, but leaving in for any potential future use
         
         %set up a variable for the index90 and index50
         index90 = 0;
