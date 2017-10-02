@@ -1,5 +1,10 @@
 function [cAP_Data] = apdCalc(filename,Fs,outputName,folder_name)
 
+
+%original call apdCalc(data,start,endp,Fs,percent,maxAPD,minAPD,motion,coordinate,bg)
+% The function [cAP_Data] = apdCalc() calculates the mean APD and the standard
+%deviation in the area selected.
+
 %INPUTS
 %wholeData= intensity values(voltage,etc)
 %Time = x axis
