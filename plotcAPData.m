@@ -22,7 +22,7 @@ allstd_cAPD90 = zeros(1);
 Treatment = zeros(1); %create an x value corresponding to the current file
 
 %select .mat files generated from apdCalc analyze
-[Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','File Selector','MultiSelect','on');
+[Filelist,Pathname] = uigetfile('F:\\*.mat','File Selector','MultiSelect','on');
 allData  = struct();
 numFiles = numel(Filelist);
 outputName = input('Please provide a name:  ');
