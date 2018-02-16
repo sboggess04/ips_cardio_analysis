@@ -32,7 +32,7 @@ if ischar(filename) == 0
 else
 end
 
-DataAnalysis = cAPstat (allData , filename, Pathname);
+DataAnalysis = cAPstat_2 (allData , filename, Pathname);
 allcAPs = normalcAP (allData , filename, Pathname);
 % save(fullfile(Folder, 'AllData.mat'), '-struct', 'allData');
 end
