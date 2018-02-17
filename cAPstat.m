@@ -14,6 +14,7 @@ cAPD50 = getfield(allData,'cAPD50');
 cAPD90 = getfield(allData,'cAPD90');
 BPM = getfield(allData,'BPM');
 interEinter = getfield(allData,'interEinter');
+chopData = getfield(allData, 'chopData');
 %Calculate mean and SD for each parameter
 avg_apd30 = mean(apd30);
 avg_apd50 = mean(apd50);
@@ -74,7 +75,7 @@ save(fullOutputName,'interEinter','-append');
 % save(fullOutputName,'wholeData','-append');
 % save(fullOutputName,'smoothData','-append');
 % save(fullOutputName,'corrData','-append');
-% save(fullOutputName,'chopData','-append');
+save(fullOutputName,'chopData','-append');
 
 %Create table of values
 stat = {'apd30' ; 'cAPD30' ; 'apd50' ; 'cAPD50' ; 'apd90' ; 'cAPD90' ; 'BPM' ; 'Interevent Interval'};

@@ -21,80 +21,92 @@ for iFile = 1:numFiles              % Loop over found files
     Data = load(fullfile(Pathname, Filelist{1,iFile}));
     Data = rmfield(Data , 'cAP_Data') ; %remove the table from files, avoid error
     Fields = fieldnames(Data);
-    for iField = 1:numel(Fields)              % Loop over fields of current file
-        aField = Fields{iField};
-        switch (aField)
-            case 'apd30'
-                apd30 = Data.(aField);
-            case 'apd50'
-                apd50 = Data.(aField);
-            case 'apd90'
-                apd90 = Data.(aField);
-            case 'BPM'
-                BPM = Data.(aField);
+    for q = 1:length(Filelist)
+        %do your shenanigans
+        Data = load(fullfile(Pathname, Filelist{1,q}));
+        Fields = fieldnames(Data);
+        for iField = 1:numel(Fields)              % Loop over fields of current file
+            aField = Fields{iField};
+            switch (aField)
+                case 'apd30'
+                    apd30 = Data.(aField);
+                case 'apd50'
+                    apd50 = Data.(aField);
+                case 'apd90'
+                    apd90 = Data.(aField);
+                case 'BPM'
+                    BPM = Data.(aField);
+            end
+            
+            %Taking values from file in current loop, calculate CL and APD values.
+            %plot these values
+            %Calculate mean APD
+            avg_apd30 = mean(apd30);
+            avg_apd50 = mean(apd50);
+            avg_apd90 = mean(apd90);
+            
+            %Calculate standard deviations
+            std_apd30 = std(apd30);
+            std_apd50 = std(apd50);
+            std_apd90 = std(apd90);
+            
+            %Calculate Cycle Length (CL)
+            CL = 60/(BPM);
+            
+            %Insert and combine values
+            if   (allAvg_apd50(1,1) == 0)
+                allAvg_apd50 = avg_apd50;
+                allAvg_apd90 = avg_apd90;
+                allAvg_apd30 = avg_apd30;
+                allCL = CL;
+                allstd_apd50 = std_apd50;
+                allstd_apd90 = std_apd90;
+                allstd_apd30 = std_apd30;
+            else
+                allAvg_apd50(end+1) = avg_apd50;
+                allAvg_apd90(end+1) = avg_apd90;
+                allAvg_apd30(end+1) = avg_apd30;
+                allCL(end+1) = CL;
+                allstd_apd50(end+1) = std_apd50;
+                allstd_apd90(end+1) = std_apd90;
+                allstd_apd30(end+1) = std_apd30;
+            end
         end
+        %Now find FcAPD50 values
+        APD50c = zeros(length(allAvg_apd50),1);
+        
+        for j = 1:length(allAvg_apd50)
+            APD50c(j) = (allAvg_apd50(j)/((allCL(j))^(1/3))) ;
+        end
+        
+        %Now find FcAPD90 values
+        APD90c = zeros(length(allAvg_apd90),1);
+        
+        for k = 1:length(allAvg_apd90)
+            APD90c(k) = (allAvg_apd90(k)/((allCL(k))^(1/3))) ;
+        end
+        
+        %Now find FcAPD30 values
+        APD30c = zeros(length(allAvg_apd30),1);
+        
+        for k = 1:length(allAvg_apd30)
+            APD30c(k) = (allAvg_apd30(k)/((allCL(k))^(1/3)));
+        end
+        
+        %append the calculated cAPD values to the current file
+        currentFileName = [Pathname Filelist{1,q}];
+        save(currentFileName,'cAPD30','-append');
+        save(currentFileName,'cAPD50','-append');
+        save(currentFileName,'cAPD90','-append');
+        %transpose
+        
+        allAvg_apd90 = allAvg_apd90.';
+        allAvg_apd50 = allAvg_apd50.';
+        allAvg_apd30 = allAvg_apd30.';
+        allCL = allCL.';
+        
     end
-    %Taking values from file in current loop, calculate CL and APD values.
-    %plot these values
-    %Calculate mean APD
-    avg_apd30 = mean(apd30);
-    avg_apd50 = mean(apd50);
-    avg_apd90 = mean(apd90);
-    
-    %Calculate standard deviations
-    std_apd30 = std(apd30);
-    std_apd50 = std(apd50);
-    std_apd90 = std(apd90);
-    
-    %Calculate Cycle Length (CL)
-    CL = 60/(BPM);
-    
-    %Insert and combine values
-    if   (allAvg_apd50(1,1) == 0)
-        allAvg_apd50 = avg_apd50;
-        allAvg_apd90 = avg_apd90;
-        allAvg_apd30 = avg_apd30;
-        allCL = CL;
-        allstd_apd50 = std_apd50;
-        allstd_apd90 = std_apd90;
-        allstd_apd30 = std_apd30;
-    else
-        allAvg_apd50(end+1) = avg_apd50;
-        allAvg_apd90(end+1) = avg_apd90;
-        allAvg_apd30(end+1) = avg_apd30;
-        allCL(end+1) = CL;
-        allstd_apd50(end+1) = std_apd50;
-        allstd_apd90(end+1) = std_apd90;
-        allstd_apd30(end+1) = std_apd30;
-    end
 end
-%Now find FcAPD50 values
-F_APD50c = zeros(length(allAvg_apd50),1);
-
-for j = 1:length(allAvg_apd50)
-    F_APD50c(j) = (allAvg_apd50(j)/((allCL(j))^(1/3))) ;
-end
-
-%Now find FcAPD90 values
-F_APD90c = zeros(length(allAvg_apd90),1);
-
-for k = 1:length(allAvg_apd90)
-    F_APD90c(k) = (allAvg_apd90(k)/((allCL(k))^(1/3))) ;
-end
-
-%Now find FcAPD30 values
-F_APD30c = zeros(length(allAvg_apd30),1);
-
-for k = 1:length(allAvg_apd30)
-    F_APD30c(k) = (allAvg_apd30(k)/((allCL(k))^(1/3)));
-end
-
-%transpose
-
-allAvg_apd90 = allAvg_apd90.';
-allAvg_apd50 = allAvg_apd50.';
-allAvg_apd30 = allAvg_apd30.';
-allCL = allCL.';
 
 %Save the current data set
 
@@ -113,9 +125,9 @@ end
 ThefullOutputName = [Pathname correctionFilename];
 
 save(ThefullOutputName,'allCL');
-save(ThefullOutputName,'F_APD30c','-append');
-save(ThefullOutputName,'F_APD50c','-append');
-save(ThefullOutputName,'F_APD90c','-append');
+save(ThefullOutputName,'F_cAPD30','-append');
+save(ThefullOutputName,'F_cAPD50','-append');
+save(ThefullOutputName,'F_cAPD90','-append');
 
 %Plot and save figures
 
@@ -125,7 +137,7 @@ title('APD50');
 xlabel('Cycle Length');
 ylabel('APD50(ms)');
 scatter(allCL , allAvg_apd50 , 'r' , 's' , 'filled');
-scatter(allCL , F_APD50c,'o','o','filled'); %plot corrected values
+scatter(allCL , APD50c,'o','o','filled'); %plot corrected values
 legend('Data'  , 'Corrected Data' ,'Location' , 'best');
 
 figure('name','APD90 correction','numbertitle','off');
@@ -134,7 +146,7 @@ title('APD90');
 xlabel('Cycle Length');
 ylabel('APD90(ms)');
 scatter(allCL , allAvg_apd90 , 'b' , 's' , 'filled');
-scatter(allCL , F_APD90c,'m','o','filled');
+scatter(allCL , APD90c,'m','o','filled');
 legend('Data' , 'Corrected Data','Location','best');
 
 figure('name','APD30 correction','numbertitle','off');
@@ -143,6 +155,6 @@ title('APD30');
 xlabel('Cycle Length');
 ylabel('APD30(ms)');
 scatter(allCL , allAvg_apd30 , 'b' , 's' , 'filled');
-scatter(allCL , F_APD30c,'m','o','filled');
+scatter(allCL , APD30c,'m','o','filled');
 legend('Data', 'Corrected Data','Location','best');
 end

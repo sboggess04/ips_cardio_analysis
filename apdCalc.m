@@ -113,18 +113,33 @@ eventDetector = isempty(chopData);
 
 if eventDetector == 0 %case where events were detected
     
+    %set up arrays to save the processed data
+    numEvents = length(chopData);
+    apd30 = zeros(numEvents,1);
+    apd50 = zeros(numEvents,1);
+    apd90 = zeros(numEvents,1);
+        chopTime = {} ;
+    % dFoverF = zeros(numEvents,1);
+    %     upstrokeDuration = zeros(numEvents,1);
+    % %     SNR = zeros(numEvents,1);
+    %     actTime = zeros(numEvents,1);
+    %     depolarTime = zeros (numEvents,1);
+    
 %     numEvents = length(chopData);
     subplot(3,2,5);
     hold on;
     title('AP Events');
     xlabel('Time(ms)');
     ylabel('Intensity');
+    xlim([0 1300]);
+    xticks([200 400 600 800 1000 1200]);
     for i=1:(length(chopData))
         chopsize = size((chopData{i,1}),1);
         chopsize1 = chopsize* (1000/Fs);
-        chopTime = linspace(0,chopsize1,chopsize);
-        chopTime = chopTime.' ;
-        plot(chopTime,chopData{i,1}),...
+        chopTime1 = linspace(0,chopsize1,chopsize);
+        chopTime1 = chopTime1.' ;
+        chopTime{i,1} = chopTime1;
+        plot(chopTime{i,1},chopData{i,1}),...
             'DisplayName';sprintf('x-vs-sin(%d*x)',i);
         
     end;
@@ -132,20 +147,6 @@ if eventDetector == 0 %case where events were detected
     set (gca , 'OuterPosition' , [0 , 0 , 0.525 ,0.375]);
     maxAP = max (chopData{i});
     ylim([-5 , (maxAP+5)]);
-    
-    
-    
-    
-    %set up arrays to save the processed data
-    numEvents = length(chopData);
-    apd30 = zeros(numEvents,1);
-    apd50 = zeros(numEvents,1);
-    apd90 = zeros(numEvents,1);
-    % dFoverF = zeros(numEvents,1);
-    %     upstrokeDuration = zeros(numEvents,1);
-    % %     SNR = zeros(numEvents,1);
-    %     actTime = zeros(numEvents,1);
-    %     depolarTime = zeros (numEvents,1);
     
     %BeatCalc
     [BPM , interEinter] = BeatCalc(numEvents, timeElap, eventStart, eventEnd);

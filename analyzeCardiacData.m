@@ -3,7 +3,7 @@ function[] = analyzeCardiacData()
 prompt2 = 'Provide filename: ';
 
 %%select .mat files generated from apdCalc to combine and analyze
-[Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','File Selector','MultiSelect','on');
+[Filelist,Pathname] = uigetfile('F:\\*.mat','File Selector','MultiSelect','on');
 allData  = struct();
 numFiles = numel(Filelist);
 for iFile = 1:numFiles              % Loop over found files
@@ -32,7 +32,7 @@ if ischar(filename) == 0
 else
 end
 
-DataAnalysis = cAPstat (allData , filename, Pathname);
+DataAnalysis = cAPstat_2 (allData , filename, Pathname);
 allcAPs = normalcAP (allData , filename, Pathname);
 % save(fullfile(Folder, 'AllData.mat'), '-struct', 'allData');
 end

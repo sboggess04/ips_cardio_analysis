@@ -22,7 +22,7 @@ allstd_cAPD90 = zeros(1);
 Treatment = zeros(1); %create an x value corresponding to the current file
 
 %select .mat files generated from apdCalc analyze
-[Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','File Selector','MultiSelect','on');
+[Filelist,Pathname] = uigetfile('F:\\*.mat','File Selector','MultiSelect','on');
 allData  = struct();
 numFiles = numel(Filelist);
 outputName = input('Please provide a name:  ');
@@ -88,19 +88,19 @@ for iFile = 1:numFiles              % Loop over found files
 %     subplot (1, 1, iFile); %Edit this to adjust the ap plot dimensions
      subplot (1, 1, 1); %Edit this to adjust the ap plot dimensions
     hold on;
-    numEvents = length(normcAP);
-    for i= 1:numEvents
-        numframes2 = length (normcAP{i,1});
-        timeElap2 = numframes2*(1/Fs);
-        time2 = zeros (numframes2,1); %pre-allocate;
-        cnt = 1; %start the count;
-        for ii = (1:numframes2)
-            time2(cnt) = (ii/Fs);
-            cnt = cnt + 1;
-        end
-        time2 = time2*1000;
-        plot (time2, normcAP{i,1});
-    end
+%     numEvents = length(normcAP);
+%     for i= 1:numEvents
+%         numframes2 = length (normcAP{i,1});
+%         timeElap2 = numframes2*(1/Fs);
+%         time2 = zeros (numframes2,1); %pre-allocate;
+%         cnt = 1; %start the count;
+%         for ii = (1:numframes2)
+%             time2(cnt) = (ii/Fs);
+%             cnt = cnt + 1;
+%         end
+%         time2 = time2*1000;
+%         plot (time2, normcAP{i,1});
+%     end
     plotColor = input ('What color for this plot? Use matlab shortcuts  ');
     plot (time,meancAP,'LineWidth',3,...
         'Color' , plotColor);
