@@ -1,5 +1,6 @@
 function [] = FridericiaAPDCorrect_2()
-
+%Do a correction for each avg APD value calculated for a file. Saves the
+%cAPD (F_cAPD) to each individual file.
 [Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','Select files to correct','MultiSelect','on');
 
 %Define variables
@@ -45,34 +46,7 @@ for q = 1:length(Filelist)
     
     %Calculate Cycle Length (CL)
     CL = 60/(BPM);
-    
-    %Correct each apd value in the current file
-    %Now find FcAPD50 values
-    cAPD50 = zeros(length(allAvg_apd50),1);
-    
-    for j = 1:length(allAvg_apd50)
-        cAPD50(j) = (allAvg_apd50(j)/((allCL(j))^(1/3))) ;
-    end
-    
-    %Now find FcAPD90 values
-    cAPD90 = zeros(length(allAvg_apd90),1);
-    
-    for k = 1:length(allAvg_apd90)
-        cAPD90(k) = (allAvg_apd90(k)/((allCL(k))^(1/3))) ;
-    end
-    
-    %Now find FcAPD30 values
-    cAPD30 = zeros(length(allAvg_apd30),1);
-    
-    for k = 1:length(allAvg_apd30)
-        cAPD30(k) = (allAvg_apd30(k)/((allCL(k))^(1/3)));
-    end
-    %append the calculated cAPD values to the current file
-    currentFileName = [Pathname Filelist{1,q}];
-    save(currentFileName,'cAPD30','-append');
-    save(currentFileName,'cAPD50','-append');
-    save(currentFileName,'cAPD90','-append');
-    
+        
     %Insert and combine values
     if   (allAvg_apd50(1,1) == 0)
         allAvg_apd30 = avg_apd30;
@@ -91,6 +65,35 @@ for q = 1:length(Filelist)
         allstd_apd50(end+1) = std_apd50;
         allstd_apd90(end+1) = std_apd90;
     end
+    
+            %Correct each apd value in the current file
+    %Now find FcAPD50 values
+    FcAPD50 = zeros(length(apd50),1);
+    
+    for j = 1:length(apd50)
+        FcAPD50(j) = (apd50(j)/((CL)^(1/3))) ;
+    end
+    
+    %Now find FcAPD90 values
+    FcAPD90 = zeros(length(apd90),1);
+    
+    for k = 1:length(apd90)
+        FcAPD90(k) = (apd90(k)/((CL)^(1/3))) ;
+    end
+    
+    %Now find FcAPD30 values
+    FcAPD30 = zeros(length(apd30),1);
+    
+    for kk = 1:length(apd30)
+        FcAPD30(kk) = (apd30(kk)/((CL)^(1/3)));
+    end
+    %append the calculated cAPD values to the current file
+    currentFileName = [Pathname Filelist{1,q}];
+    save(currentFileName,'FcAPD30','-append');
+    save(currentFileName,'FcAPD50','-append');
+    save(currentFileName,'FcAPD90','-append');
+
+end
 end
 %end of file loop. From here, everything is one file of mean corrected values
 

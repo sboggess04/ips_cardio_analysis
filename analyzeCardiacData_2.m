@@ -6,7 +6,7 @@ prompt2 = 'Provide filename: ';
 %%should start with the d0 for dose curves, and file can be expanded later
 %%to include more doses
 
-[Filelist,Pathname] = uigetfile('F:\\*.mat','File Selector','MultiSelect','on');
+[Filelist,Pathname] = uigetfile('F:\20180214_SCB2-043A\DAY14\analysis\*.mat','File Selector','MultiSelect','on');
 allData  = struct();
 numFiles = numel(Filelist);
 for iFile = 1:numFiles              % Loop over found files
@@ -44,7 +44,7 @@ choice = questdlg('Add more doses to this set?','Add more doses?', ...
     'Yes Please','No Thank You','Yes Please');
 
 while (strcmp(choice,'Yes Please'))
-    [Filelist,Pathname] = uigetfile('F:\\*.mat','File Selector','MultiSelect','on');
+    [Filelist,Pathname] = uigetfile('F:\20180214_SCB2-043A\DAY14\analysis\*.mat','File Selector','MultiSelect','on');
     allData  = struct();
     numFiles = numel(Filelist);
 for iFile = 1:numFiles              % Loop over found files
