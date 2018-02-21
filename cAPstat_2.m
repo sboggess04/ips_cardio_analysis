@@ -131,7 +131,7 @@ if (strcmp(choice,'No Thank You'))
     save (fullOutputName,'cAPanalysis','-append');
     
 else
-    [Filelist2,Pathname2] = uigetfile('F:\20180214_SCB2-043A\DAY14\analysis\*.mat','File Selector','MultiSelect','off');
+    [Filelist2,Pathname2] = uigetfile('F:\\*.mat','File Selector','MultiSelect','off');
     Data = load(fullfile(Pathname2, Filelist2));
     %Load relevant fields out of growing dataset (DATA structure)
     avg_apd30 = getfield(Data,'avg_apd30');
