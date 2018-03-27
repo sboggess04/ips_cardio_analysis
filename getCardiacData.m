@@ -30,23 +30,29 @@ for i=1:numel(filenames)
         tiffname = fullfile(filenames{i});
         [pathstr,name,ext] = fileparts(filenames{i});
         filename = name;
-%         disp (tiffname); %Show the file you are working with
+        %         disp (tiffname); %Show the file you are working with
         tifStacks = apdCalc(tiffname,Fs,filename,folder_name);
     else if strfind(filenames{i} , 'Vm')
             tiffname = fullfile(filenames{i});
             [pathstr,name,ext] = fileparts(filenames{i});
             filename = name;
-%             disp (tiffname); %Show the file you are working with
+            %             disp (tiffname); %Show the file you are working with
             tifStacks = apdCalc(tiffname,Fs,filename,folder_name);
-        else
-            disp ('not a vm trace');
+        else if strfind(filenames{i} , 'std')
+                tiffname = fullfile(filenames{i});
+                [pathstr,name,ext] = fileparts(filenames{i});
+                filename = name;
+                %             disp (tiffname); %Show the file you are working with
+                tifStacks = apdCalc(tiffname,Fs,filename,folder_name);
+            else
+                disp ('not a vm trace');
+            end
         end
+        
     end
-  
-end
     fprintf(['While it is always best to believe in one’s self, \n' ...
-         ' a little help from others can be a great blessing. --Iroh  \n' ...
-         '   ']);
-     
-toc 
+        ' a little help from others can be a great blessing. --Iroh  \n' ...
+        '   ']);
+    
+    toc
 end
