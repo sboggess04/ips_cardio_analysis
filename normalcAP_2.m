@@ -35,7 +35,7 @@ if (strcmp(choice,'No Thank You'))
     traceAnalysis = meancAP;
     
 else
-    [Filelist2,Pathname2] = uigetfile('F:\\*.mat','Select growing data set','MultiSelect','off');
+    [Filelist2,Pathname2] = uigetfile('E:\\*.mat','Select growing data set','MultiSelect','off');
     Data = load(fullfile(Pathname2, Filelist2));
     cAPtraces = getfield(allData,'chopData');
     %     cAPtraces = getfield(Data,'chopData');
