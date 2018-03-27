@@ -1,4 +1,4 @@
-function [z] = asymmtLSF(y, lambda, p)
+function [z] = asymmtLSF(y, lambda, p) 
 
 % Estimate baseline with asymmetric least squares
 m = length(y);
