@@ -12,6 +12,9 @@ apd90 = getfield(allData,'apd90');
 cAPD30 = getfield(allData,'cAPD30');
 cAPD50 = getfield(allData,'cAPD50');
 cAPD90 = getfield(allData,'cAPD90');
+FcAPD30 = getfield(allData,'FcAPD30');
+FcAPD50 = getfield(allData,'FcAPD50');
+FcAPD90 = getfield(allData,'FcAPD90');
 BPM = getfield(allData,'BPM');
 interEinter = getfield(allData,'interEinter');
 chopData = getfield(allData, 'chopData');
@@ -28,6 +31,9 @@ if (strcmp(choice,'No Thank You'))
     avg_cAPD30(1) = zeros(1);
     avg_cAPD50(1) = zeros(1);
     avg_cAPD90(1) = zeros(1);
+    avg_FcAPD30(1) = zeros(1);
+    avg_FcAPD50(1) = zeros(1);
+    avg_FcAPD90(1) = zeros(1);
     avg_BPM(1) = zeros(1);
     avg_interEinter(1) = zeros(1);
     std_apd30(1) = zeros(1);
@@ -36,6 +42,9 @@ if (strcmp(choice,'No Thank You'))
     std_cAPD30(1) = zeros(1);
     std_cAPD50(1) = zeros(1);
     std_cAPD90(1) = zeros(1);
+    std_FcAPD30(1) = zeros(1);
+    std_FcAPD50(1) = zeros(1);
+    std_FcAPD90(1) = zeros(1);
     std_BPM(1) = zeros(1);
     std_interEinter(1) = zeros(1);
     
@@ -46,6 +55,9 @@ if (strcmp(choice,'No Thank You'))
     avg_cAPD30 = mean(cAPD30);
     avg_cAPD50 = mean(cAPD50);
     avg_cAPD90 = mean(cAPD90);
+    avg_FcAPD30 = mean(FcAPD30);
+    avg_FcAPD50 = mean(FcAPD50);
+    avg_FcAPD90 = mean(FcAPD90);
     avg_BPM = mean(BPM);
     avg_interEinter = mean(interEinter);
     
@@ -56,6 +68,9 @@ if (strcmp(choice,'No Thank You'))
     std_cAPD30 = std(cAPD30);
     std_cAPD50 = std(cAPD50);
     std_cAPD90 = std(cAPD90);
+    std_FcAPD30 = std(FcAPD30);
+    std_FcAPD50 = std(FcAPD50);
+    std_FcAPD90 = std(FcAPD90);
     std_BPM = std(BPM);
     std_interEinter = std(interEinter);
     
@@ -77,9 +92,18 @@ if (strcmp(choice,'No Thank You'))
     save(fullOutputName,'std_cAPD30','-append');
     save(fullOutputName,'std_cAPD50','-append');
     save(fullOutputName,'std_cAPD90','-append');
+    save(fullOutputName,'avg_FcAPD30','-append');
+    save(fullOutputName,'avg_FcAPD50','-append');
+    save(fullOutputName,'avg_FcAPD90','-append');
+    save(fullOutputName,'std_FcAPD30','-append');
+    save(fullOutputName,'std_FcAPD50','-append');
+    save(fullOutputName,'std_FcAPD90','-append');
     save(fullOutputName,'cAPD30','-append');
     save(fullOutputName,'cAPD50','-append');
     save(fullOutputName,'cAPD90','-append');
+    save(fullOutputName,'FcAPD30','-append');
+    save(fullOutputName,'FcAPD50','-append');
+    save(fullOutputName,'FcAPD90','-append');
     save(fullOutputName,'avg_BPM','-append');
     save(fullOutputName,'avg_interEinter','-append');
     save(fullOutputName,'std_BPM','-append');
@@ -116,6 +140,9 @@ else
     avg_cAPD30 = getfield(Data,'avg_cAPD30');
     avg_cAPD50 = getfield(Data,'avg_cAPD50');
     avg_cAPD90 = getfield(Data,'avg_cAPD90');
+    avg_FcAPD30 = getfield(Data,'avg_FcAPD30');
+    avg_FcAPD50 = getfield(Data,'avg_FcAPD50');
+    avg_FcAPD90 = getfield(Data,'avg_FcAPD90');
     avg_BPM = getfield(Data,'avg_BPM');
     avg_interEinter = getfield(Data,'avg_interEinter');
     std_apd30 = getfield(Data,'std_apd30');
@@ -124,6 +151,9 @@ else
     std_cAPD30 = getfield(Data,'std_cAPD30');
     std_cAPD50 = getfield(Data,'std_cAPD50');
     std_cAPD90 = getfield(Data,'std_cAPD90');
+    std_FcAPD30 = getfield(Data,'std_FcAPD30');
+    std_FcAPD50 = getfield(Data,'std_FcAPD50');
+    std_FcAPD90 = getfield(Data,'std_FcAPD90');
     std_BPM = getfield(Data,'std_BPM');
     std_interEinter = getfield(Data,'std_interEinter');
     
@@ -135,6 +165,9 @@ else
     avg_cAPD30 = vertcat(avg_cAPD30 ,(mean(cAPD30)));
     avg_cAPD50 = vertcat(avg_cAPD50 ,(mean(cAPD50)));
     avg_cAPD90 = vertcat(avg_cAPD90 ,(mean(cAPD90)));
+    avg_FcAPD30 = vertcat(avg_FcAPD30 ,(mean(FcAPD30)));
+    avg_FcAPD50 = vertcat(avg_FcAPD50 ,(mean(FcAPD50)));
+    avg_FcAPD90 = vertcat(avg_FcAPD90 ,(mean(FcAPD90)));
     avg_BPM = vertcat(avg_BPM ,(mean(BPM)));
     avg_interEinter = vertcat(avg_interEinter ,(mean(interEinter)));
     
@@ -145,6 +178,9 @@ else
     std_cAPD30 = vertcat(std_cAPD30 ,(std(cAPD30)));
     std_cAPD50 = vertcat(std_cAPD50 ,(std(cAPD50)));
     std_cAPD90 = vertcat(std_cAPD90 ,(std(cAPD90)));
+    std_FcAPD30 = vertcat(std_FcAPD30 ,(std(FcAPD30)));
+    std_FcAPD50 = vertcat(std_FcAPD50 ,(std(FcAPD50)));
+    std_FcAPD90 = vertcat(std_FcAPD90 ,(std(FcAPD90)));
     std_BPM = vertcat(std_BPM ,(std(BPM)));
     std_interEinter = vertcat(std_interEinter ,(std(interEinter)));
     
@@ -169,6 +205,15 @@ else
     save(fullOutputName,'cAPD30','-append');
     save(fullOutputName,'cAPD50','-append');
     save(fullOutputName,'cAPD90','-append');
+    save(fullOutputName,'avg_FcAPD30','-append');
+    save(fullOutputName,'avg_FcAPD50','-append');
+    save(fullOutputName,'avg_FcAPD90','-append');
+    save(fullOutputName,'std_FcAPD30','-append');
+    save(fullOutputName,'std_FcAPD50','-append');
+    save(fullOutputName,'std_FcAPD90','-append');
+    save(fullOutputName,'FcAPD30','-append');
+    save(fullOutputName,'FcAPD50','-append');
+    save(fullOutputName,'FcAPD90','-append');
     save(fullOutputName,'avg_BPM','-append');
     save(fullOutputName,'avg_interEinter','-append');
     save(fullOutputName,'std_BPM','-append');

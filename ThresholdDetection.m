@@ -6,7 +6,7 @@ function [cutdata, start1, end1] = ThresholdDetection( Vector, threshold, Fs )
 %at the end %%note%% put this to 180ms 05/15/2017 for analysis of extended
 %aps. Seems of at the front, but might consider splitting into 2 variables
 %if the end of previous APs becomes included.
-apExtendEnd = (300*(Fs/1000));
+apExtendEnd = (500*(Fs/1000));
 apExtendFront = (60*(Fs/1000));
 
 %% find start and end points
