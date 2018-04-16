@@ -50,9 +50,11 @@ for i=1:numel(filenames)
         end
         
     end
-    fprintf(['While it is always best to believe in one’s self, \n' ...
-        ' a little help from others can be a great blessing. --Iroh  \n' ...
-        '   ']);
     
-    toc
+end
+fprintf(['While it is always best to believe in one’s self, \n' ...
+    ' a little help from others can be a great blessing. --Iroh  \n' ...
+    '   ']);
+
+toc
 end
