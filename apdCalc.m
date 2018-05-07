@@ -81,7 +81,7 @@ corrData = (smoothData - background); %perform background correction based basel
 h = figure('name',outputName,'numbertitle','off');
 subplot(3,2,[1,2]);
 hold on;
-title('Raw and Smoothed Traces');
+title(outputName , 'Interpreter' , 'none');
 % xlabel('Time(sec)');
 ylabel('Intensity');
 plot(time,meanTrace);
