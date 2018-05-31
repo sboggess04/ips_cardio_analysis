@@ -2,8 +2,9 @@ function [] = getCardiacData ()
 
 %% REMEMBER TO SET CORRECT FS!!!
 %User input variables
-Fs = 200   ; %sampling rate (in Hz or fps)
-
+Fs = 200 ; %sampling rate (in Hz or fps)
+UL = 0.35 ;
+LL = 0.05 ;
 tic
 
 %%Hopefully this wrapper script will allow for user to select folders
@@ -31,7 +32,7 @@ for i=1:numel(filenames)
         [pathstr,name,ext] = fileparts(filenames{i});
         filename = name;
         %         disp (tiffname); %Show the file you are working with
-        tifStacks = apdCalc(tiffname,Fs,filename,folder_name);
+        tifStacks = apdCalc(Fs, UL, LL, tiffname, filename, folder_name);
     else if strfind(filenames{i} , 'Vm')
             tiffname = fullfile(filenames{i});
             [pathstr,name,ext] = fileparts(filenames{i});
