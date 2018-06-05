@@ -3,7 +3,7 @@ function [] = getCardiacData ()
 %% REMEMBER TO SET CORRECT FS!!!
 %User input variables
 Fs = 200 ; %sampling rate (in Hz or fps)
-UL = 0.35 ;
+UL = 0.35 ; %Up
 LL = 0.05 ;
 tic
 
