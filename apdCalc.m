@@ -1,4 +1,4 @@
-function [cAP_Data] = apdCalc(filename,Fs,outputName,folder_name)
+function [cAP_Data] = apdCalc(Fs, UL, LL, filename, outputName, folder_name)
 
 %%If i make a change, can i commit to local repo?
 
@@ -81,7 +81,7 @@ corrData = (smoothData - background); %perform background correction based basel
 h = figure('name',outputName,'numbertitle','off');
 subplot(3,2,[1,2]);
 hold on;
-title('Raw and Smoothed Traces');
+title(outputName , 'Interpreter' , 'none');
 % xlabel('Time(sec)');
 ylabel('Intensity');
 plot(time,meanTrace);
@@ -102,12 +102,24 @@ set (gca , 'OuterPosition' , [0 , 0.35 , 1 ,0.325]);
 ylim([-10, inf]);
 
 %Define threshold on corrected data
-threshold = (((max(corrData)- min(corrData))*0.3) + min(corrData)); %initially the threshold is 30% of the max signal of corrected trace
-threshold = threshold+1 ; %adding the 2 as caution against baseline/no activity. Can change if the noise level of low-signal traces breaks this.
+% threshold = (((max(corrData)- min(corrData))*0.3) + min(corrData)); %initially the threshold is 30% of the max signal of corrected trace
+% threshold = threshold+1 ; %adding the 1 as caution against baseline/no activity. Can change if the noise level of low-signal traces breaks this.
+%%Below is new script for schmitt trigger values for upper limit UL and
+%%lower limit LL
+meanVal = (((max(corrData)+ min(corrData))/2)) ; %initially the threshold is 30% of the max signal of corrected trace
+meanVal = meanVal+1 ; %adding the 1 as caution against baseline/no activity. Can change if the noise level of low-signal traces breaks this.
+UL = UL*meanVal ;
+LL = LL*meanVal ;
 
 %%Call thresholddetection%%
 %plot all chopped data in subplot
-[chopData , eventStart , eventEnd] = ThresholdDetection(corrData,threshold,Fs);
+[chopData , eventStart , eventEnd] = ThresholdDetection(corrData, UL, LL, Fs);
+
+%%Run local max detection to look for abberant EAD events in cutData from
+%%thresholding
+
+[EAD , chopData] = EADdetect(chopData);
+checkEAD = any(EAD{1,1});
 
 eventDetector = isempty(chopData);
 
@@ -118,21 +130,21 @@ if eventDetector == 0 %case where events were detected
     apd30 = zeros(numEvents,1);
     apd50 = zeros(numEvents,1);
     apd90 = zeros(numEvents,1);
-        chopTime = {} ;
+    chopTime = {} ;
     % dFoverF = zeros(numEvents,1);
     %     upstrokeDuration = zeros(numEvents,1);
     % %     SNR = zeros(numEvents,1);
     %     actTime = zeros(numEvents,1);
     %     depolarTime = zeros (numEvents,1);
     
-%     numEvents = length(chopData);
+    %     numEvents = length(chopData);
     subplot(3,2,5);
     hold on;
     title('AP Events');
     xlabel('Time(ms)');
     ylabel('Intensity');
-    xlim([0 1300]);
-    xticks([200 400 600 800 1000 1200]);
+    xlim([0 inf]);
+    %     xticks([200 400 600 800 1000 1200]);
     for i=1:(length(chopData))
         chopsize = size((chopData{i,1}),1);
         chopsize1 = chopsize* (1000/Fs);
@@ -142,11 +154,18 @@ if eventDetector == 0 %case where events were detected
         plot(chopTime{i,1},chopData{i,1}),...
             'DisplayName';sprintf('x-vs-sin(%d*x)',i);
         
+<<<<<<< HEAD
     end
     plot(get(gca,'xlim'),[threshold threshold]);
+=======
+    end;
+    plot(get(gca,'xlim'),[UL UL],'r');
+    plot(get(gca,'xlim'),[LL LL],'r');
+    %     plot(get(gca,'xlim'),[meanVal meanVal],'b');
+>>>>>>> b29489215abcf095be7fe53c9665696f5930f61f
     set (gca , 'OuterPosition' , [0 , 0 , 0.525 ,0.375]);
     maxAP = max (chopData{i});
-    ylim([-5 , (maxAP+5)]);
+    %     ylim([-2 , (maxAP+2)]);
     
     %BeatCalc
     [BPM , interEinter] = BeatCalc(numEvents, timeElap, eventStart, eventEnd);
@@ -167,9 +186,9 @@ if eventDetector == 0 %case where events were detected
         [max_der , max_i] = max(apd_data2,[],1); % find location of max derivative
         
         
-        % Calculate dF/dt max and activation time
-        [dFdt_max , max_i] = max(apd_data2,[],1); % find location of max derivative
-%         actTime(i) = max_i /Fs;
+        %         % Calculate dF/dt max and activation time
+        %         [dFdt_max , max_i] = max(apd_data2,[],1); % find location of max derivative
+        %         %         actTime(i) = max_i /Fs;
         
         %%Find maximum of the signal
         [maxVal , maxValI] = max(apd_data);
@@ -227,12 +246,12 @@ if eventDetector == 0 %case where events were detected
     
     %%Calculate dF/F0 for trace
     [dF_F , dF , z , zz] = dFoverF(smoothData);
-%     %Plot data from dFoverF
-%     figure;
-%     hold on;
-%     plot(smoothData);
-%     plot(z);
-%     plot(zz);
+    %     %Plot data from dFoverF
+    %     figure;
+    %     hold on;
+    %     plot(smoothData);
+    %     plot(z);
+    %     plot(zz);
     
     %%Peak signal to noise ratio (SNR)
     [SNR] = SNRCalc(eventStart(end) , meanTrace , dF , Fs);
@@ -246,16 +265,17 @@ if eventDetector == 0 %case where events were detected
     save(fullOutputName,'apd50');
     save(fullOutputName,'apd90','-append');
     save(fullOutputName,'apd30','-append');
-%     save(fullOutputName,'actTime','-append');
+    %     save(fullOutputName,'actTime','-append');
     save(fullOutputName,'dF_F','-append');
     save(fullOutputName,'SNR','-append');
-%     save(fullOutputName,'upstrokeDuration','-append');
+    %     save(fullOutputName,'upstrokeDuration','-append');
     save(fullOutputName,'meanTrace','-append');
     save(fullOutputName,'smoothData','-append');
     save(fullOutputName,'corrData','-append');
     save(fullOutputName,'chopData','-append');
+    save(fullOutputName,'EAD','-append');
     save(fullOutputName,'time','-append');
-%     save(fullOutputName,'depolarTime','-append');
+    %     save(fullOutputName,'depolarTime','-append');
     save(fullOutputName,'BPM','-append');
     save(fullOutputName,'interEinter','-append');
     
@@ -285,6 +305,9 @@ if eventDetector == 0 %case where events were detected
     text (0.05 , 0.5 , ['APD50:  '  num2str(round(avg_apd50 , 1))  '+/-'  num2str(round(std_apd50 , 1))], 'FontSize' , 12);
     text (0.05 , 0.25 , ['APD90:  '  num2str(round(avg_apd90 , 1))  '+/-'  num2str(round(std_apd90 , 1))], 'FontSize' , 12);
     text (0.05 , 0.0 , ['dF/F:  '  num2str(round(dF_F , 3)) '  SNR:  ' num2str(round(SNR , 1))], 'FontSize' , 12) ;
+    if checkEAD == 1
+        text (0.05 , -0.25 , 'EADs detected in trace.' , 'FontSize' , 12);
+    end
     set (gca , 'Visible', 'off');
     
     %Create table of values%
@@ -306,15 +329,19 @@ if eventDetector == 0 %case where events were detected
 else if eventDetector == 1 %case where no events were detected
         
         subplot(3,2,5);
-        text (0.05 , 0.5 , 'No events detected' , 'FontSize' , 12) ;
+        text (0.05 , 0.5 , 'No single-peak events detected' , 'FontSize' , 12) ;
         set (gca , 'Visible', 'off');
         %give cAP_Data output a string message
         cAP_Data = 'No Events Dectected, no analysis available' ;
+        if isempty(EAD) == 0
+            set (0 , 'currentfigure' , h);
+            subplot (3,2,6);
+            text (0.05 , -0.25 , 'EADs detected in trace.' , 'FontSize' , 12);
+        end
         save (fullOutputName,'cAP_Data');
         %Save figure
+        saveas(h,fullOutputName); %save as matlab fig)
         saveas(h,fullOutputName,'pdf'); %save as a pdf
         saveas(h,fullOutputName,'png'); %save as a png
-        saveas(h,fullOutputName); %save as matlab fig);
-        
     end
 end

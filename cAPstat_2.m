@@ -1,4 +1,4 @@
-function [cAPanalysis choice] = cAPstat_2 (allData,outputName,outputPath)
+function [cAPanalysis , choice] = cAPstat_2 (allData,outputName,outputPath)
 
 %%Take worked up data from apdCalc and combine for larger data sets
 %%Define file path and outputname
