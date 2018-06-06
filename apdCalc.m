@@ -142,7 +142,7 @@ if eventDetector == 0 %case where events were detected
         plot(chopTime{i,1},chopData{i,1}),...
             'DisplayName';sprintf('x-vs-sin(%d*x)',i);
         
-    end;
+    end
     plot(get(gca,'xlim'),[threshold threshold]);
     set (gca , 'OuterPosition' , [0 , 0 , 0.525 ,0.375]);
     maxAP = max (chopData{i});
