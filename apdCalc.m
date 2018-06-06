@@ -154,10 +154,15 @@ if eventDetector == 0 %case where events were detected
         plot(chopTime{i,1},chopData{i,1}),...
             'DisplayName';sprintf('x-vs-sin(%d*x)',i);
         
+<<<<<<< HEAD
+    end
+    plot(get(gca,'xlim'),[threshold threshold]);
+=======
     end;
     plot(get(gca,'xlim'),[UL UL],'r');
     plot(get(gca,'xlim'),[LL LL],'r');
     %     plot(get(gca,'xlim'),[meanVal meanVal],'b');
+>>>>>>> b29489215abcf095be7fe53c9665696f5930f61f
     set (gca , 'OuterPosition' , [0 , 0 , 0.525 ,0.375]);
     maxAP = max (chopData{i});
     %     ylim([-2 , (maxAP+2)]);

@@ -27,7 +27,7 @@ disp(folder_name);
 
 tifStacks = cell(numel(filenames),1);
 for i=1:numel(filenames)
-    if strfind(filenames{i} , 'vm')
+    if strfind(filenames{i} , 'std')
         tiffname = fullfile(filenames{i});
         [pathstr,name,ext] = fileparts(filenames{i});
         filename = name;
