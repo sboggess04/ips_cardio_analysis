@@ -326,7 +326,7 @@ while (strcmp(choice,'Yes Please'))
     %     save(fullOutputName,'NAPD90c','-append');
     %
     %Save figure, can come back and check for fit later
-    saveas(gcf,fullOutputName,'pdf'); %save as a pdf
+%     saveas(gcf,fullOutputName,'pdf'); %save as a pdf
     saveas(gcf,fullOutputName); %save as matlab fig
     
     choice = questdlg('Would you like to apply this to other data?','Data selection', ...

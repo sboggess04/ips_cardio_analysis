@@ -27,24 +27,24 @@ disp(folder_name);
 
 tifStacks = cell(numel(filenames),1);
 for i=1:numel(filenames)
-    if strfind(filenames{i} , 'vm')
+    if strfind(filenames{i} , 'vf')
         tiffname = fullfile(filenames{i});
         [pathstr,name,ext] = fileparts(filenames{i});
         filename = name;
-        %         disp (tiffname); %Show the file you are working with
+                disp (tiffname); %Show the file you are working with
         tifStacks = apdCalc(Fs, UL, LL, tiffname, filename, folder_name);
-    else if strfind(filenames{i} , 'Vm')
+    else if strfind(filenames{i} , 'fvf2')
             tiffname = fullfile(filenames{i});
             [pathstr,name,ext] = fileparts(filenames{i});
             filename = name;
-            %             disp (tiffname); %Show the file you are working with
-            tifStacks = apdCalc(tiffname,Fs,filename,folder_name);
+                        disp (tiffname); %Show the file you are working with
+            tifStacks = apdCalc(Fs, UL, LL, tiffname, filename,folder_name);
         else if strfind(filenames{i} , 'std')
                 tiffname = fullfile(filenames{i});
                 [pathstr,name,ext] = fileparts(filenames{i});
                 filename = name;
-                %             disp (tiffname); %Show the file you are working with
-                tifStacks = apdCalc(tiffname,Fs,filename,folder_name);
+                            disp (tiffname); %Show the file you are working with
+                tifStacks = apdCalc(Fs, UL, LL, tiffname, filename,folder_name);
             else
                 disp ('not a vm trace');
             end
