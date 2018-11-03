@@ -1,11 +1,5 @@
 function [cAP_Data] = apdCalc(Fs, UL, LL, filename, outputName, folder_name)
 
-%%If i make a change, can i commit to local repo?
-
-%original call apdCalc(data,start,endp,Fs,percent,maxAPD,minAPD,motion,coordinate,bg)
-% The function [actC] = apdCalc() calculates the mean APD and the standard
-%deviation in the area selected.
-
 %INPUTS
 %wholeData= intensity values(voltage,etc)
 %Time = x axis
@@ -78,7 +72,8 @@ background = asymmtLSF(smoothData,10^7, 0.001);
 corrData = (smoothData - background); %perform background correction based baseline values from previous line
 
 %%plot crude and smoothed plots on one figure, plot corrected trace on a second
-h = figure('name',outputName,'numbertitle','off');
+h = figure('name',outputName,'numbertitle','off'); 
+set(gcf,'visible','off'); %prevents figure window from opening up
 subplot(3,2,[1,2]);
 hold on;
 title(outputName , 'Interpreter' , 'none');
@@ -101,9 +96,6 @@ plot (time,corrData);
 set (gca , 'OuterPosition' , [0 , 0.35 , 1 ,0.325]);
 ylim([-10, inf]);
 
-%Define threshold on corrected data
-% threshold = (((max(corrData)- min(corrData))*0.3) + min(corrData)); %initially the threshold is 30% of the max signal of corrected trace
-% threshold = threshold+1 ; %adding the 1 as caution against baseline/no activity. Can change if the noise level of low-signal traces breaks this.
 %%Below is new script for schmitt trigger values for upper limit UL and
 %%lower limit LL
 meanVal = (((max(corrData)+ min(corrData))/2)) ; %initially the threshold is 30% of the max signal of corrected trace
@@ -121,7 +113,7 @@ LL = LL*meanVal ;
 [EAD , chopData] = EADdetect(chopData);
 checkEAD = any(EAD{1,1});
 
-eventDetector = isempty(chopData);
+eventDetector = isempty(chopData{1}); %%check to see if events are detected, so you can skip analysis if they are.
 
 if eventDetector == 0 %case where events were detected
     
@@ -154,7 +146,7 @@ if eventDetector == 0 %case where events were detected
         plot(chopTime{i,1},chopData{i,1}),...
             'DisplayName';sprintf('x-vs-sin(%d*x)',i);
         
-    end;
+    end
     plot(get(gca,'xlim'),[UL UL],'r');
     plot(get(gca,'xlim'),[LL LL],'r');
     %     plot(get(gca,'xlim'),[meanVal meanVal],'b');
@@ -304,6 +296,10 @@ if eventDetector == 0 %case where events were detected
         text (0.05 , -0.25 , 'EADs detected in trace.' , 'FontSize' , 12);
     end
     set (gca , 'Visible', 'off');
+%     h = gcf;
+%     h.PaperUnits = 'inches';
+%     h.PaperPosition = [0 0 3 1.5];
+    
     
     %Create table of values%
     stat = {'apd30' ; 'apd50' ; 'apd90' ; 'SNR' ; 'BPM' ; 'Interevent Interval'};
@@ -318,8 +314,8 @@ if eventDetector == 0 %case where events were detected
     
     %Save figure
     saveas(h,fullOutputName,'pdf'); %save as a pdf
-    saveas(h,fullOutputName,'png'); %save as a png
-    saveas(h,fullOutputName); %save as matlab fig);
+%     saveas(h,fullOutputName,'png'); %save as a png
+%     saveas(h,fullOutputName); %save as matlab fig);
     
 else if eventDetector == 1 %case where no events were detected
         
@@ -335,8 +331,8 @@ else if eventDetector == 1 %case where no events were detected
         end
         save (fullOutputName,'cAP_Data');
         %Save figure
-        saveas(h,fullOutputName); %save as matlab fig)
+%         saveas(h,fullOutputName); %save as matlab fig)
         saveas(h,fullOutputName,'pdf'); %save as a pdf
-        saveas(h,fullOutputName,'png'); %save as a png
+%         saveas(h,fullOutputName,'png'); %save as a png
     end
 end
