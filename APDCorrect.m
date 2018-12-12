@@ -15,9 +15,9 @@ allstd_apd30 = zeros(1);
 %Load APD and BPM from traces
 %%select .mat files generated from apdCalc analyze
 if ispc
-[Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','File Selector','MultiSelect','on');
+    [Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','File Selector','MultiSelect','on');
 elseif ismac
- [Filelist,Pathname] = uigetfile('//*.mat','File Selector','MultiSelect','on');   
+    [Filelist,Pathname] = uigetfile('//*.mat','File Selector','MultiSelect','on');
 else
     disp('Platform not supported');
 end
@@ -174,8 +174,13 @@ choice = questdlg('Would you like to apply this to other data?','Data selection'
     'Yes Please','No Thank You','Yes Please');
 
 while (strcmp(choice,'Yes Please'))
-    [Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','Select files to correct','MultiSelect','on');
-    
+    if ispc
+        [Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','Select files to correct','MultiSelect','on');
+    elseif ismac
+        [Filelist,Pathname] = uigetfile('/*/.mat','Select files to correct','MultiSelect','on');
+    else
+        disp('Platform not supported');
+    end
     %Define variables
     NallAvg_apd30 = zeros(1);
     NallAvg_apd50 = zeros(1);
@@ -332,7 +337,7 @@ while (strcmp(choice,'Yes Please'))
     %     save(fullOutputName,'NAPD90c','-append');
     %
     %Save figure, can come back and check for fit later
-%     saveas(gcf,fullOutputName,'pdf'); %save as a pdf
+    %     saveas(gcf,fullOutputName,'pdf'); %save as a pdf
     saveas(gcf,fullOutputName); %save as matlab fig
     
     choice = questdlg('Would you like to apply this to other data?','Data selection', ...

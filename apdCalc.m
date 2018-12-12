@@ -34,7 +34,13 @@ function [cAP_Data] = apdCalc(Fs, UL, LL, filename, outputName, folder_name)
 %%Define file path and outputname
 outputName = strrep(outputName,'_MMStack_Pos0.ome','');
 outputPath = folder_name;
-outputPath = strcat(outputPath,'\');
+if ispc
+    outputPath = strcat(outputPath,'\');
+elseif ismac
+    outputPath = strcat(outputPath,'/');
+else
+    disp('Platform not supported');
+end
 fullOutputName = [outputPath outputName];
 
 %%Open Tiff stack file
@@ -72,7 +78,7 @@ background = asymmtLSF(smoothData,10^7, 0.001);
 corrData = (smoothData - background); %perform background correction based baseline values from previous line
 
 %%plot crude and smoothed plots on one figure, plot corrected trace on a second
-h = figure('name',outputName,'numbertitle','off'); 
+h = figure('name',outputName,'numbertitle','off');
 set(gcf,'visible','off'); %prevents figure window from opening up
 subplot(3,2,[1,2]);
 hold on;
@@ -296,9 +302,9 @@ if eventDetector == 0 %case where events were detected
         text (0.05 , -0.25 , 'EADs detected in trace.' , 'FontSize' , 12);
     end
     set (gca , 'Visible', 'off');
-%     h = gcf;
-%     h.PaperUnits = 'inches';
-%     h.PaperPosition = [0 0 3 1.5];
+    %     h = gcf;
+    %     h.PaperUnits = 'inches';
+    %     h.PaperPosition = [0 0 3 1.5];
     
     
     %Create table of values%
@@ -314,8 +320,8 @@ if eventDetector == 0 %case where events were detected
     
     %Save figure
     saveas(h,fullOutputName,'pdf'); %save as a pdf
-%     saveas(h,fullOutputName,'png'); %save as a png
-%     saveas(h,fullOutputName); %save as matlab fig);
+    %     saveas(h,fullOutputName,'png'); %save as a png
+    %     saveas(h,fullOutputName); %save as matlab fig);
     
 else if eventDetector == 1 %case where no events were detected
         
@@ -331,8 +337,8 @@ else if eventDetector == 1 %case where no events were detected
         end
         save (fullOutputName,'cAP_Data');
         %Save figure
-%         saveas(h,fullOutputName); %save as matlab fig)
+        %         saveas(h,fullOutputName); %save as matlab fig)
         saveas(h,fullOutputName,'pdf'); %save as a pdf
-%         saveas(h,fullOutputName,'png'); %save as a png
+        %         saveas(h,fullOutputName,'png'); %save as a png
     end
 end
