@@ -1,8 +1,14 @@
 function [] = FridericiaAPDCorrect_2()
 %Do a correction for each avg APD value calculated for a file. Saves the
 %cAPD (F_cAPD) to each individual file.
+if ispc
 [Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','Select files to correct','MultiSelect','on');
 
+elseif ismac
+   [Filelist,Pathname] = uigetfile('//*.mat','Select files to correct','MultiSelect','on'); 
+else 
+    disp('Platform not supported');
+end
 %Define variables
 allAvg_apd30 = zeros(1);
 allAvg_apd50 = zeros(1);

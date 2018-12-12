@@ -14,7 +14,13 @@ allstd_apd30 = zeros(1);
 
 %Load APD and BPM from traces
 %%select .mat files generated from apdCalc analyze
+if ispc
 [Filelist,Pathname] = uigetfile('C:\Users\Steven Boggess\Documents\Miller Lab\Data\*.mat','File Selector','MultiSelect','on');
+elseif ismac
+ [Filelist,Pathname] = uigetfile('//*.mat','File Selector','MultiSelect','on');   
+else
+    disp('Platform not supported');
+end
 allData  = struct();
 numFiles = numel(Filelist);
 for iFile = 1:numFiles              % Loop over found files

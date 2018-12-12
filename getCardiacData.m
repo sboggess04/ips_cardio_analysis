@@ -16,11 +16,17 @@ tic
 
 %%Input variables to change:
 %% Find FS to set the aqc frequency. All tiff stacks must be of the same frequency to work with this current configuration
+if ispc
+    %Get all tif filenames from a selected folder
+    folder_name = uigetdir('C:\Users\Steven Boggess\Documents\Miller Lab\Data\', 'Select Folder Containing Tiff Stacks to Analyze');
+    f = rdir ([folder_name,'\**\*.tif']);% Will search all subfolders as well.
+elseif ismac
+    folder_name = uigetdir('/**/', 'Select Folder Containing Tiff Stacks to Analyze');
+    f = rdir ([folder_name,'/**/*.tif']);% Will search all subfolders as well.
+else
+    disp('Platform not supported');
+end
 
-%Get all tif filenames from a selected folder
-folder_name = uigetdir('C:\Users\Steven Boggess\Documents\Miller Lab\Data\', 'Select Folder Containing Tiff Stacks to Analyze');
-% f = dir ([folder_name,'\*.tif']); %cell array containing info of all tif files in directory
-f = rdir ([folder_name,'\**\*.tif']);% Will search all subfolders as well.
 filenames = {f.name}; %tif filenames collected
 
 disp(folder_name);
@@ -31,19 +37,19 @@ for i=1:numel(filenames)
         tiffname = fullfile(filenames{i});
         [pathstr,name,ext] = fileparts(filenames{i});
         filename = name;
-                disp (tiffname); %Show the file you are working with
+        disp (tiffname); %Show the file you are working with
         tifStacks = apdCalc(Fs, UL, LL, tiffname, filename, folder_name);
     else if strfind(filenames{i} , 'fvf2')
             tiffname = fullfile(filenames{i});
             [pathstr,name,ext] = fileparts(filenames{i});
             filename = name;
-                        disp (tiffname); %Show the file you are working with
+            disp (tiffname); %Show the file you are working with
             tifStacks = apdCalc(Fs, UL, LL, tiffname, filename,folder_name);
         else if strfind(filenames{i} , 'std')
                 tiffname = fullfile(filenames{i});
                 [pathstr,name,ext] = fileparts(filenames{i});
                 filename = name;
-                            disp (tiffname); %Show the file you are working with
+                disp (tiffname); %Show the file you are working with
                 tifStacks = apdCalc(Fs, UL, LL, tiffname, filename,folder_name);
             else
                 disp ('not a vm trace');
