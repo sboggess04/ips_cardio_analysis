@@ -2,9 +2,9 @@ function [] = getCardiacData ()
 
 %% REMEMBER TO SET CORRECT FS!!!
 %User input variables
-Fs = 200 ; %sampling rate (in Hz or fps)
-UL = 0.35 ; %Up
-LL = 0.05 ;
+Fs = 1000/400 ; %sampling rate (in Hz or fps)
+UL = 0.45 ; %Up
+LL = 0.1 ;
 tic
 
 %%Hopefully this wrapper script will allow for user to select folders
@@ -33,7 +33,7 @@ disp(folder_name);
 
 tifStacks = cell(numel(filenames),1);
 for i=1:numel(filenames)
-    if strfind(filenames{i} , 'vf')
+    if strfind(filenames{i} , 'KCL')
         tiffname = fullfile(filenames{i});
         [pathstr,name,ext] = fileparts(filenames{i});
         filename = name;
